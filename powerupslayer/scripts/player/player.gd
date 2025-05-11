@@ -8,6 +8,9 @@ var controls: Node
 var weapon_slots: Array[Node] = []
 var current_weapon: Node
 var xp: int = 0
+var level: int = 1
+var base_xp_requirement: int = 100
+var xp_requirement: int = 100
 
 func _ready():
 	health = max_health
@@ -52,3 +55,34 @@ func die():
 func add_xp(amount: int):
 	xp += amount
 	print("XP: ", xp)
+	check_level_up()
+
+func check_level_up():
+	while xp >= xp_requirement:
+		level_up()
+
+func level_up():
+	level += 1
+	xp -= xp_requirement
+	xp_requirement = int(base_xp_requirement * pow(1.1, level - 1))
+	print("Level up! Now level ", level)
+	print("Next level requires ", xp_requirement, " XP")
+	
+	# Apply level bonuses to all weapons
+	for weapon in weapon_slots:
+		if weapon != null:
+			apply_weapon_bonuses(weapon)
+
+func apply_weapon_bonuses(weapon: Node):
+	# Apply 10% bonus for each level (including current level)
+	var bonus_multiplier = pow(1.1, level - 1)
+	
+	# Apply bonuses to weapon properties if they exist
+	if "damage" in weapon:
+		weapon.damage *= 1.1
+	if "fire_rate" in weapon:
+		weapon.fire_rate *= 1.1
+	if "speed" in weapon:
+		weapon.speed *= 1.1
+	if "cooldown" in weapon:
+		weapon.cooldown /= 1.1  # Reduce cooldown by 10%
