@@ -3,11 +3,14 @@ extends CharacterBody2D
 @export var speed := 150.0
 @export var damage := 10.0
 @export var attack_cooldown := 1.0
+@export var max_health := 50.0
 
 var target: Node2D
 var can_attack := true
+var health: float
 
 func _ready():
+	health = max_health
 	# Register with EnemyManager
 	var enemy_manager = get_node("/root/EnemyManager")
 	if enemy_manager:
@@ -39,6 +42,17 @@ func attack():
 		can_attack = false
 		await get_tree().create_timer(attack_cooldown).timeout
 		can_attack = true
+
+func take_damage(amount: float):
+	health -= amount
+	if health <= 0:
+		die()
+		
+func get_actor_name():
+	return "ENEMY"
+
+func die():
+	queue_free()  # Basic death handling
 
 func _exit_tree():
 	# Unregister from EnemyManager

@@ -4,6 +4,7 @@
 [ext_resource type="Texture2D" uid="uid://dcd8om2jymwtg" path="res://Sprites/Spider.png" id="2_7th38"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_0b8hk"]
+size = Vector2(64, 64)
 
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
 script = ExtResource("1_ktlqc")

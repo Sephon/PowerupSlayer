@@ -42,5 +42,8 @@ func take_damage(amount: float):
 	if health <= 0:
 		die()
 
+func get_actor_name():
+	return "PLAYER"
+
 func die():
 	queue_free()  # Basic death handling 
