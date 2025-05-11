@@ -1,0 +1,6 @@
+[gd_scene load_steps=2 format=3 uid="uid://vrfjr63n7fc3"]
+
+[ext_resource type="Script" path="res://scripts/enemy/floating_damage_number.gd" id="1_mke44"]
+
+[node name="FloatingDamageNumbers" type="Label"]
+script = ExtResource("1_mke44")

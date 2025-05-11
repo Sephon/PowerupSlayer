@@ -8,6 +8,10 @@ size = Vector2(64, 64)
 
 [node name="Enemy" type="CharacterBody2D" groups=["enemies"]]
 script = ExtResource("1_ktlqc")
+speed = null
+damage = null
+attack_cooldown = null
+max_health = null
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
 texture = ExtResource("2_7th38")

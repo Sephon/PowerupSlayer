@@ -45,9 +45,17 @@ func attack():
 
 func take_damage(amount: float):
 	health -= amount
+	show_floating_damage(amount)
 	if health <= 0:
 		die()
-		
+
+func show_floating_damage(amount):
+	var damage_number_scene = preload("res://scenes/FloatingDamageNumber.tscn")
+	var damage_number = damage_number_scene.instantiate()
+	get_tree().current_scene.add_child(damage_number)
+	var head_position = global_position + Vector2(0, -40)
+	damage_number.show_damage(amount, head_position)
+
 func get_actor_name():
 	return "ENEMY"
 
