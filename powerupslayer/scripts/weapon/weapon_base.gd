@@ -5,6 +5,7 @@ extends Node
 @export var damage := 10.0
 @export var projectile_scene: PackedScene
 @export var fire_rate := 1.0
+@export var speed := 10.0
 
 var can_fire := true
 
