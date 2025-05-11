@@ -26,7 +26,15 @@ func setup_weapons():
 	var bullet_weapon = load("res://scripts/weapon/bullet.gd").new()
 	add_child(bullet_weapon)
 	weapon_slots[0] = bullet_weapon
+	
+	# Add fireball weapon
+	var fireball_weapon = load("res://scripts/weapon/fireball.gd").new()
+	add_child(fireball_weapon)
+	weapon_slots[1] = fireball_weapon
+	
 	current_weapon = bullet_weapon
+	# Initialize fireball weapon
+	fireball_weapon.fire(null)
 
 func _physics_process(delta):
 	# Movement
@@ -40,6 +48,11 @@ func _physics_process(delta):
 			var target = enemy_manager.get_closest_to(global_position)
 			if target:
 				current_weapon.fire(target)
+	
+	# Keep fireball weapon active
+	var fireball_weapon = weapon_slots[1]
+	if fireball_weapon:
+		fireball_weapon.fire(null)
 
 func take_damage(amount: float):
 	health -= amount
