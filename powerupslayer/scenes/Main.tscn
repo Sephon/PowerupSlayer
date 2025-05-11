@@ -1,0 +1,33 @@
+[gd_scene load_steps=7 format=3 uid="uid://cg4rulxjctpn0"]
+
+[ext_resource type="Script" path="res://scripts/map/map.gd" id="1_pqhig"]
+[ext_resource type="Script" path="res://scripts/player/player.gd" id="2_sjus0"]
+[ext_resource type="Texture2D" uid="uid://de5m70jn0pqxn" path="res://Sprites/Actor.png" id="3_3aov8"]
+[ext_resource type="Script" path="res://scripts/player/controls.gd" id="4_u0lf6"]
+[ext_resource type="Script" path="res://scripts/enemy/spawner.gd" id="5_1mkih"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_g1jan"]
+size = Vector2(32, 32)
+
+[node name="Main" type="Node2D"]
+
+[node name="Map" type="Node2D" parent="."]
+script = ExtResource("1_pqhig")
+
+[node name="Player" type="CharacterBody2D" parent="." groups=["players"]]
+script = ExtResource("2_sjus0")
+
+[node name="Sprite2D" type="Sprite2D" parent="Player"]
+texture = ExtResource("3_3aov8")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Player"]
+shape = SubResource("RectangleShape2D_g1jan")
+
+[node name="Controls" type="Node" parent="Player"]
+script = ExtResource("4_u0lf6")
+
+[node name="Camera2D" type="Camera2D" parent="Player"]
+position_smoothing_enabled = true
+
+[node name="Spawner" type="Node2D" parent="."]
+script = ExtResource("5_1mkih")
