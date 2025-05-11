@@ -7,6 +7,7 @@ var health: float
 var controls: Node
 var weapon_slots: Array[Node] = []
 var current_weapon: Node
+var xp: int = 0
 
 func _ready():
 	health = max_health
@@ -47,3 +48,7 @@ func get_actor_name():
 
 func die():
 	queue_free()  # Basic death handling 
+
+func add_xp(amount: int):
+	xp += amount
+	print("XP: ", xp)

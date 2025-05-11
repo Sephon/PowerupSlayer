@@ -60,7 +60,14 @@ func get_actor_name():
 	return "ENEMY"
 
 func die():
+	spawn_xp_powerup()
 	queue_free()  # Basic death handling
+
+func spawn_xp_powerup():
+	var xp_scene = preload("res://scenes/XPPowerup.tscn")
+	var xp_powerup = xp_scene.instantiate()
+	xp_powerup.global_position = global_position
+	get_tree().current_scene.add_child(xp_powerup)
 
 func _exit_tree():
 	# Unregister from EnemyManager
