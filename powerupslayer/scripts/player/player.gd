@@ -87,7 +87,14 @@ func get_actor_name():
 	return "PLAYER"
 
 func die():
-	queue_free()  # Basic death handling 
+	# Show game over screen
+	var game_over_scene = load("res://scenes/GameOver.tscn")
+	var game_over = game_over_scene.instantiate()
+	get_tree().root.add_child(game_over)
+	game_over.show_game_over()
+	# Don't queue_free() immediately to allow the game over screen to show
+	await get_tree().create_timer(0.1).timeout
+	queue_free()
 
 func add_xp(amount: int):
 	xp += amount
