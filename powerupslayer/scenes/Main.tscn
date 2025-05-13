@@ -1,10 +1,11 @@
-[gd_scene load_steps=7 format=3 uid="uid://cg4rulxjctpn0"]
+[gd_scene load_steps=8 format=3 uid="uid://cg4rulxjctpn0"]
 
 [ext_resource type="Script" path="res://scripts/map/map.gd" id="1_pqhig"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="2_sjus0"]
 [ext_resource type="Texture2D" uid="uid://de5m70jn0pqxn" path="res://Sprites/Actor.png" id="3_3aov8"]
 [ext_resource type="Script" path="res://scripts/player/controls.gd" id="4_u0lf6"]
 [ext_resource type="Script" path="res://scripts/enemy/spawner.gd" id="5_1mkih"]
+[ext_resource type="PackedScene" uid="uid://b8j6y4qnxvxvn" path="res://scenes/ui/xp_bar.tscn" id="6_xpbar"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g1jan"]
 size = Vector2(32, 32)
@@ -31,3 +32,7 @@ position_smoothing_enabled = true
 
 [node name="Spawner" type="Node2D" parent="."]
 script = ExtResource("5_1mkih")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="XPBar" parent="UI" instance=ExtResource("6_xpbar")]
