@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed := 50.0
+@export var speed := 150.0
 @export var damage := 10.0
 @export var attack_cooldown := 1.0
 @export var max_health := 50.0
@@ -34,16 +34,16 @@ func start_breathing_animation():
 	
 	# Randomize the animation parameters slightly for each enemy
 	var scale_variation = randf_range(0.05, 0.15)  # 5-15% scale variation
-	var rotation_variation = randf_range(0.05, 0.15)  # 5-15 degrees rotation
-	var animation_duration = randf_range(0.8, 1.2)  # Slightly random duration
-	
+	var rotation_variation = randf_range(0.15, 0.25)  # 5-15 degrees rotation
+	var animation_duration = randf_range(0.5, 1.5)  # Slightly random duration
+	speed -= (animation_duration * 30) # Increases the speed of the enemy if the rotation is faster
 	# Scale up and rotate
 	animation_tween.tween_property(sprite, "scale", base_scale * (1 + scale_variation), animation_duration/2)
 	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation + rotation_variation, animation_duration/2)
 	
-	# Scale down and rotate back
-	animation_tween.tween_property(sprite, "scale", base_scale, animation_duration/2)
-	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation, animation_duration/2)
+	# Scale down and rotate back to opposite
+	animation_tween.tween_property(sprite, "scale", base_scale * (1 - scale_variation), animation_duration/2)
+	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation - rotation_variation, animation_duration/2)
 
 func _physics_process(_delta):
 	if not target:

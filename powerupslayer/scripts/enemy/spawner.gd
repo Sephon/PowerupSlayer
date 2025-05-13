@@ -1,8 +1,8 @@
 extends Node2D
 
-@export var spawn_radius := 200.0
-@export var max_enemies := 50
-@export var spawn_interval := 1.0
+@export var spawn_radius := 1500.0
+@export var max_enemies := 150
+@export var spawn_interval := .5
 
 var enemy_scene: PackedScene
 var spawn_queue: Array[Vector2] = []
