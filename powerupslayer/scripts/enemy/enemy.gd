@@ -43,17 +43,18 @@ func attack():
 		await get_tree().create_timer(attack_cooldown).timeout
 		can_attack = true
 
-func take_damage(amount: float):
+func take_damage(amount: float, is_crit: bool = false):
 	health -= amount
-	show_floating_damage(amount)
+	show_floating_damage(amount, is_crit)
 	if health <= 0:
 		die()
 
-func show_floating_damage(amount):
+func show_floating_damage(amount: float, is_crit: bool = false):
 	var damage_number_scene = preload("res://scenes/FloatingDamageNumber.tscn")
 	var damage_number = damage_number_scene.instantiate()
 	get_tree().current_scene.add_child(damage_number)
 	var head_position = global_position + Vector2(0, -40)
+	damage_number.is_crit = is_crit
 	damage_number.show_damage(amount, head_position)
 
 func get_actor_name():

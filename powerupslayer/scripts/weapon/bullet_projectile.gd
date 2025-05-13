@@ -3,6 +3,7 @@ extends Area2D
 var speed := 400.0
 var damage := 20.0
 var velocity := Vector2.ZERO
+var is_crit := false
 
 func _ready():
 	# Enable collision with bodies
@@ -14,7 +15,7 @@ func _physics_process(delta):
 
 func _on_body_entered(body):
 	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER":
-		body.take_damage(damage)
+		body.take_damage(damage, is_crit)
 		queue_free()
 
 func _on_visible_on_screen_notifier_2d_screen_exited():

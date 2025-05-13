@@ -5,6 +5,7 @@ var rotation_speed := 1.0  # Rotations per second
 var orbit_radius := 50.0  # Distance from player
 var current_angle := 0.0
 var player: Node2D
+var is_crit := false
 
 func _init():
 	print("Fireball _init called")
@@ -66,4 +67,4 @@ func _on_body_entered(body):
 	print("Fireball hit something: ", body.name)
 	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER":
 		print("Fireball damaging: ", body.name)
-		body.take_damage(damage) 
+		body.take_damage(damage, is_crit) 
