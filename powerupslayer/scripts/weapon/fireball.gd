@@ -54,9 +54,11 @@ func apply_weapon_bonuses(level: int) -> void:
 	# Apply fireball-specific bonuses
 	rotation_speed *= 1.1  # Increase rotation speed
 	orbit_radius *= 1.1    # Increase orbit radius
+	damage *= 1.1
 	
 	# Update existing fireballs with new properties
 	for fireball in active_fireballs:
 		if is_instance_valid(fireball):
 			fireball.rotation_speed = rotation_speed
 			fireball.orbit_radius = orbit_radius 
+			fireball.damage *= 1.1

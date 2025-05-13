@@ -51,8 +51,8 @@ func _physics_process(delta):
 		var enemy_manager = get_node("/root/EnemyManager")
 		if enemy_manager:
 			var target = enemy_manager.get_closest_to(global_position)
-			#if target:
-				#current_weapon.fire(target)
+			if target:
+				current_weapon.fire(target)
 	
 	# Keep fireball weapon active
 	var fireball_weapon = weapon_slots[1]
@@ -113,3 +113,5 @@ func apply_weapon_bonuses(weapon: Node):
 		weapon.speed *= 1.1
 	if "cooldown" in weapon:
 		weapon.cooldown /= 1.1  # Reduce cooldown by 10%
+	if "max_fireballs" in weapon:
+		weapon.max_fireballs = max(1, min(level / 5, 5))
