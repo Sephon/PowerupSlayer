@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://drqlyd200cgn7"]
+
+[ext_resource type="Script" path="res://scripts/ui/level_up_notification.gd" id="1_script"]
+[ext_resource type="FontFile" uid="uid://b7d7mvn56jrdh" path="res://fonts/PixelifySans-VariableFont_wght.ttf" id="2_font"]
+
+[node name="LevelUpNotification" type="Node2D"]
+script = ExtResource("1_script")
+
+[node name="Label" type="Label" parent="."]
+offset_left = -100.0
+offset_top = -20.0
+offset_right = 100.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(1, 0.84, 0, 1)
+theme_override_colors/font_outline_color = Color(1, 1, 1, 1)
+theme_override_constants/outline_size = 2
+theme_override_fonts/font = ExtResource("2_font")
+theme_override_font_sizes/font_size = 32
+text = "Level Up!"
+horizontal_alignment = 1
+vertical_alignment = 1

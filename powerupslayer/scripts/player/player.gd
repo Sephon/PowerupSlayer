@@ -112,6 +112,12 @@ func level_up():
 	print("Level up! Now level ", level)
 	print("Next level requires ", xp_requirement, " XP")
 	
+	# Show level up notification
+	var notification_scene = load("res://scenes/LevelUpNotification.tscn")
+	var notification = notification_scene.instantiate()
+	add_child(notification)
+	notification.position = Vector2(0, -50)  # Position above the player
+	
 	# Apply level bonuses to all weapons
 	for weapon in weapon_slots:
 		if weapon != null:
