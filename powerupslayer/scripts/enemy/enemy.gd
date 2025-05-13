@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed := 150.0
+@export var speed := 50.0
 @export var damage := 10.0
 @export var attack_cooldown := 1.0
 @export var max_health := 50.0
@@ -8,13 +8,42 @@ extends CharacterBody2D
 var target: Node2D
 var can_attack := true
 var health: float
+var sprite: Sprite2D
+var base_scale: Vector2
+var base_rotation: float
+var animation_tween: Tween
 
 func _ready():
 	health = max_health
+	sprite = $Sprite2D
+	base_scale = sprite.scale
+	base_rotation = sprite.rotation
+	
+	# Start the breathing animation
+	start_breathing_animation()
+	
 	# Register with EnemyManager
 	var enemy_manager = get_node("/root/EnemyManager")
 	if enemy_manager:
 		enemy_manager.register_enemy(self)
+
+func start_breathing_animation():
+	# Create a repeating animation
+	animation_tween = create_tween()
+	animation_tween.set_loops()  # Make it loop forever
+	
+	# Randomize the animation parameters slightly for each enemy
+	var scale_variation = randf_range(0.05, 0.15)  # 5-15% scale variation
+	var rotation_variation = randf_range(0.05, 0.15)  # 5-15 degrees rotation
+	var animation_duration = randf_range(0.8, 1.2)  # Slightly random duration
+	
+	# Scale up and rotate
+	animation_tween.tween_property(sprite, "scale", base_scale * (1 + scale_variation), animation_duration/2)
+	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation + rotation_variation, animation_duration/2)
+	
+	# Scale down and rotate back
+	animation_tween.tween_property(sprite, "scale", base_scale, animation_duration/2)
+	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation, animation_duration/2)
 
 func _physics_process(_delta):
 	if not target:
