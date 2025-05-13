@@ -47,6 +47,7 @@ func spawn_enemy():
 	
 	can_spawn = false
 	await get_tree().create_timer(spawn_interval).timeout
+	spawn_interval -= (spawn_interval / 1000)
 	can_spawn = true
 
 func get_enemy_count() -> int:

@@ -36,4 +36,4 @@ func _spawn_projectile(target: Node2D) -> void:
 	# Set projectile direction
 	var direction = (target.global_position - projectile.global_position).normalized()
 	projectile.velocity = direction * projectile.speed 
-	print("fireing ligtning")
+	

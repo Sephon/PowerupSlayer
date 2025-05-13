@@ -11,11 +11,20 @@ var xp: int = 0
 var level: int = 1
 var base_xp_requirement: int = 100
 var xp_requirement: int = 100
+var health_bar: Node2D
 
 func _ready():
 	health = max_health
 	controls = $Controls
 	setup_weapons()
+	setup_health_bar()
+
+func setup_health_bar():
+	var health_bar_scene = load("res://scenes/HealthBar.tscn")
+	health_bar = health_bar_scene.instantiate()
+	add_child(health_bar)
+	health_bar.position.y = 40  # Position below the player
+	health_bar.setup(max_health)
 
 func setup_weapons():
 	# Initialize weapon slots
@@ -70,6 +79,7 @@ func _physics_process(delta):
 
 func take_damage(amount: float):
 	health -= amount
+	health_bar.update_health(health)
 	if health <= 0:
 		die()
 
