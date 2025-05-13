@@ -6,4 +6,3 @@ func _ready():
 	projectile_scene = load("res://scenes/bullet.tscn")
 	fire_rate = 1.0 
 	speed = 10
-	

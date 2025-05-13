@@ -2,7 +2,7 @@ class_name WeaponBase
 extends Node
 
 @export var cooldown := 1.0
-@export var damage := 10.0
+@export var damage := 50.0
 @export var projectile_scene: PackedScene
 @export var fire_rate := 1.0
 @export var speed := 10.0

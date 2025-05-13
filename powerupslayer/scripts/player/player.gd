@@ -32,6 +32,11 @@ func setup_weapons():
 	add_child(fireball_weapon)
 	weapon_slots[1] = fireball_weapon
 	
+	# Add lightning weapon
+	var lightning_weapon = load("res://scripts/weapon/lightning.gd").new()
+	add_child(lightning_weapon)
+	weapon_slots[2] = lightning_weapon
+	
 	current_weapon = bullet_weapon
 	# Initialize fireball weapon
 	fireball_weapon.fire(null)
@@ -46,13 +51,22 @@ func _physics_process(delta):
 		var enemy_manager = get_node("/root/EnemyManager")
 		if enemy_manager:
 			var target = enemy_manager.get_closest_to(global_position)
-			if target:
-				current_weapon.fire(target)
+			#if target:
+				#current_weapon.fire(target)
 	
 	# Keep fireball weapon active
 	var fireball_weapon = weapon_slots[1]
 	if fireball_weapon:
 		fireball_weapon.fire(null)
+	
+	# Keep lightning weapon active
+	var lightning_weapon = weapon_slots[2]
+	if lightning_weapon:
+		var enemy_manager = get_node("/root/EnemyManager")
+		if enemy_manager:
+			var target = enemy_manager.get_closest_to(global_position)
+			if target:
+				lightning_weapon.fire(target)
 
 func take_damage(amount: float):
 	health -= amount

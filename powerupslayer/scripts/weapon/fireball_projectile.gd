@@ -7,17 +7,8 @@ var current_angle := 0.0
 var player: Node2D
 var is_crit := false
 
-func _init():
-	print("Fireball _init called")
-
-func _enter_tree():
-	print("Fireball _enter_tree called")
-	print("Fireball scene tree path: ", get_path())
-	print("Fireball parent: ", get_parent().name if get_parent() else "No parent")
-
 func _ready():
-	print("Fireball _ready called")
-	
+
 	# Enable collision with bodies
 	collision_layer = 2  # Set to layer 2
 	collision_mask = 1   # Collide with layer 1 (where enemies and player are)
@@ -27,23 +18,9 @@ func _ready():
 		body_entered.connect(_on_body_entered)
 		print("Connected body_entered signal")
 	
-	# Debug print collision settings
-	print("Fireball collision layer: ", collision_layer)
-	print("Fireball collision mask: ", collision_mask)
-	print("Fireball position: ", global_position)
-	print("Fireball player reference: ", player != null)
-	
 	# Make sure we're visible
 	modulate = Color(1, 1, 1, 1)  # Ensure full opacity
 	visible = true
-	print("Fireball visibility set to: ", visible)
-
-func _process(_delta):
-	if Engine.get_frames_drawn() % 60 == 0:
-		print("Fireball _process running")
-		print("Fireball position: ", global_position)
-		print("Fireball visible: ", is_visible_in_tree())
-		print("Fireball parent: ", get_parent().name if get_parent() else "No parent")
 
 func _physics_process(delta):
 	if not player:
