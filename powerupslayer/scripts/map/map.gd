@@ -82,7 +82,7 @@ func generate_chunk(chunk_pos: Vector2i):
 			world_x = world_x % WORLD_SIZE
 			world_y = world_y % WORLD_SIZE
 			if world_x >= 0 and world_x < WORLD_SIZE and world_y >= 0 and world_y < WORLD_SIZE:
-				var random_x = rng.randi_range(0, 3)  # Random ground tile
+				var random_x = rng.randi_range(0, 1)  # Random ground tile
 				var random_y = rng.randi_range(0,0)
 				chunk.set_cell(0, Vector2i(x, y), 0, Vector2i(random_x, random_y))
 
