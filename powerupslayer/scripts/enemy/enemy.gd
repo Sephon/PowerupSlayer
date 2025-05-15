@@ -14,11 +14,22 @@ var base_rotation: float
 var animation_tween: Tween
 var is_paused: bool = false
 var is_dying: bool = false
+var size_factor: float  # Will store the random size factor
 
 func _ready():
+	# Generate random size factor between 0.75 and 1.25
+	size_factor = randf_range(0.75, 1.25)
+	
+	# Apply quadratic scaling to health and speed
+	# Larger enemies have more health but move slower
+	# Smaller enemies have less health but move faster
+	max_health *= size_factor * size_factor  # Quadratic scaling for health
+	speed /= (size_factor * size_factor)    # Quadratic scaling for speed (inverse relationship)
+	
 	health = max_health
 	sprite = $Sprite2D
-	base_scale = sprite.scale
+	base_scale = sprite.scale * size_factor  # Apply size factor to base scale
+	sprite.scale = base_scale  # Set initial scale
 	base_rotation = sprite.rotation
 	
 	# Start the breathing animation
@@ -58,7 +69,7 @@ func _physics_process(_delta):
 	# Move towards target
 	var direction = (target.global_position - global_position).normalized()
 	velocity = direction * speed
-	move_and_slide()
+	move_and_slide()	
 	
 	# Attack if close enough
 	if can_attack and global_position.distance_to(target.global_position) < 50:
