@@ -1,11 +1,13 @@
 extends WeaponBase
 
 func _ready():
+	weapon_type = "lightning"
 	cooldown = 2.5  # Fires every 2.5 seconds
 	damage = 40.0   # High damage to compensate for slow fire rate
 	projectile_scene = load("res://scenes/lightning.tscn")
 	fire_rate = 0.4  # 0.4 shots per second
 	speed = 800.0    # Very fast projectile speed
+	super._ready()  # Call parent _ready to store base stats
 
 func _spawn_projectile(target: Node2D) -> void:
 	if not projectile_scene:

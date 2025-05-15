@@ -16,6 +16,25 @@ var animation_timer: float = 0.0
 var animation_frame: int = 0
 var is_moving: bool = false
 
+# Available weapons for selection
+var available_weapons = {
+	"bullet": {
+		"name": "Bullet",
+		"scene": "res://scripts/weapon/bullet.gd",
+		"sprite": "res://Sprites/weapons/bullet.png"
+	},
+	"fireball": {
+		"name": "Fireball",
+		"scene": "res://scripts/weapon/fireball.gd",
+		"sprite": "res://Sprites/weapons/fireball.png"
+	},
+	"lightning": {
+		"name": "Lightning",
+		"scene": "res://scripts/weapon/lightning.gd",
+		"sprite": "res://Sprites/weapons/lightning.png"
+	}
+}
+
 func _ready():
 	health = max_health
 	controls = $Controls
@@ -25,9 +44,9 @@ func _ready():
 
 func setup_sprite():
 	$Sprite2D.texture = load("res://Sprites/Character_Animations.png")
-	$Sprite2D.hframes = 3  # Assuming the sprite sheet has 3 frames
+	$Sprite2D.hframes = 3
 	$Sprite2D.vframes = 1
-	$Sprite2D.frame = 0
+	$Sprite2D.frame = 1
 
 func setup_health_bar():
 	var health_bar_scene = load("res://scenes/HealthBar.tscn")
@@ -46,20 +65,10 @@ func setup_weapons():
 	var bullet_weapon = load("res://scripts/weapon/bullet.gd").new()
 	add_child(bullet_weapon)
 	weapon_slots[0] = bullet_weapon
-	
-	# Add fireball weapon
-	var fireball_weapon = load("res://scripts/weapon/fireball.gd").new()
-	add_child(fireball_weapon)
-	weapon_slots[1] = fireball_weapon
-	
-	# Add lightning weapon
-	var lightning_weapon = load("res://scripts/weapon/lightning.gd").new()
-	add_child(lightning_weapon)
-	weapon_slots[2] = lightning_weapon
+	bullet_weapon.weapon_level = 1
 	
 	current_weapon = bullet_weapon
-	# Initialize fireball weapon
-	fireball_weapon.fire(null)
+	bullet_weapon.fire(null)
 
 func _physics_process(delta):
 	# Movement
@@ -70,19 +79,11 @@ func _physics_process(delta):
 	is_moving = velocity.length() > 0
 	if is_moving:
 		animation_timer += delta
-		if animation_timer >= 0.1666:  # ~166.6ms per frame
+		if animation_timer >= 0.1666:
 			animation_timer = 0
 			animation_frame = (animation_frame + 1) % 3
 			$Sprite2D.frame = animation_frame
-			
-			# Flip sprite based on movement direction
-			#if velocity.x < 0:
-				#$Sprite2D.texture = load("res://Sprites/Character_Extended_Reverse.png")
-			#elif velocity.x > 0:
-				#$Sprite2D.texture = load("res://Sprites/Character_Extended.png")
 	else:
-		# Reset to neutral sprite when not moving
-		#$Sprite2D.texture = load("res://Sprites/Char.png")
 		$Sprite2D.frame = 1
 		animation_timer = 0
 	
@@ -103,12 +104,10 @@ func get_actor_name():
 	return "PLAYER"
 
 func die():
-	# Show game over screen
 	var game_over_scene = load("res://scenes/GameOver.tscn")
 	var game_over = game_over_scene.instantiate()
 	get_tree().root.add_child(game_over)
 	game_over.show_game_over()
-	# Don't queue_free() immediately to allow the game over screen to show
 	await get_tree().create_timer(0.1).timeout
 	queue_free()
 
@@ -125,29 +124,53 @@ func level_up():
 	xp -= xp_requirement
 	xp_requirement = int(base_xp_requirement * pow(1.1, level - 1))
 	
-	# Show level up notification
-	var notification_scene = load("res://scenes/LevelUpNotification.tscn")
-	var notification = notification_scene.instantiate()
-	add_child(notification)
-	notification.position = Vector2(0, -50)  # Position above the player
-	
-	# Apply level bonuses to all weapons
-	for weapon in weapon_slots:
-		if weapon != null:
-			apply_weapon_bonuses(weapon)
+	# Show weapon selection popup
+	show_weapon_selection()
 
-func apply_weapon_bonuses(weapon: Node):
-	# Apply 10% bonus for each level (including current level)
-	var bonus_multiplier = pow(1.1, level - 1)
+func show_weapon_selection():
+	var selection_scene = load("res://scenes/WeaponSelection.tscn")
+	var selection = selection_scene.instantiate()
+	add_child(selection)
+	selection.position = Vector2(0, -50)
 	
-	# Apply bonuses to weapon properties if they exist
-	if "damage" in weapon:
-		weapon.damage *= 1.1
-	if "fire_rate" in weapon:
-		weapon.fire_rate *= 1.1
-	if "speed" in weapon:
-		weapon.speed *= 1.1
-	if "cooldown" in weapon:
-		weapon.cooldown /= 1.1  # Reduce cooldown by 10%
-	if "max_fireballs" in weapon:
-		weapon.max_fireballs = max(1, min(level / 5, 5))
+	# Get available weapons for selection
+	var available_options = []
+	for weapon_key in available_weapons:
+		var weapon_data = available_weapons[weapon_key]
+		var existing_weapon = find_weapon_by_type(weapon_key)
+		
+		available_options.append({
+			"key": weapon_key,
+			"name": weapon_data.name,
+			"sprite": weapon_data.sprite,
+			"level": existing_weapon.weapon_level if existing_weapon else 1
+		})
+	
+	selection.setup(available_options)
+	selection.weapon_selected.connect(_on_weapon_selected)
+
+func find_weapon_by_type(weapon_type: String) -> Node:
+	for weapon in weapon_slots:
+		if weapon != null and weapon.weapon_type == weapon_type:
+			return weapon
+	return null
+
+func _on_weapon_selected(weapon_key: String):
+	var weapon_data = available_weapons[weapon_key]
+	var existing_weapon = find_weapon_by_type(weapon_key)
+	
+	if existing_weapon:
+		# Level up existing weapon
+		existing_weapon.weapon_level += 1
+		existing_weapon.apply_level_bonuses()
+	else:
+		# Add new weapon
+		var new_weapon = load(weapon_data.scene).new()
+		add_child(new_weapon)
+		new_weapon.weapon_level = 1
+		
+		# Find first empty slot
+		for i in range(weapon_slots.size()):
+			if weapon_slots[i] == null:
+				weapon_slots[i] = new_weapon
+				break

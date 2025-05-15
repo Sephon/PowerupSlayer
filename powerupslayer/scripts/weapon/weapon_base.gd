@@ -12,6 +12,25 @@ extends Node
 @export var crit_damage_multiplier := 2.0  # 200% base crit damage
 
 var can_fire := true
+var weapon_level := 1
+var weapon_type: String = "base"
+
+# Base stats that will be used for level calculations
+var base_damage: float
+var base_cooldown: float
+var base_fire_rate: float
+var base_speed: float
+var base_crit_chance: float
+var base_crit_damage: float
+
+func _ready():
+	# Store base stats
+	base_damage = damage
+	base_cooldown = cooldown
+	base_fire_rate = fire_rate
+	base_speed = speed
+	base_crit_chance = crit_chance
+	base_crit_damage = crit_damage_multiplier
 
 func fire(target: Node2D) -> void:
 	if not can_fire:
@@ -25,7 +44,9 @@ func fire(target: Node2D) -> void:
 func _spawn_projectile(target: Node2D) -> void:
 	if not projectile_scene:
 		return
-	
+	if target == null:
+		return
+		
 	var projectile = projectile_scene.instantiate()
 	projectile.global_position = get_parent().global_position
 	
@@ -49,13 +70,16 @@ func _spawn_projectile(target: Node2D) -> void:
 	var direction = (target.global_position - projectile.global_position).normalized()
 	projectile.velocity = direction * projectile.speed
 
-func apply_weapon_bonuses(level: int) -> void:
-	# Apply standard bonuses
-	damage *= 1.1
-	fire_rate *= 1.1
-	speed *= 1.1
-	cooldown /= 1.1  # Reduce cooldown by 10%
+func apply_level_bonuses() -> void:
+	# Calculate level multiplier (10% increase per level)
+	var level_multiplier = pow(1.1, weapon_level - 1)
+	
+	# Apply bonuses based on base stats
+	damage = base_damage * level_multiplier
+	fire_rate = base_fire_rate * level_multiplier
+	speed = base_speed * level_multiplier
+	cooldown = base_cooldown / level_multiplier  # Reduce cooldown by 10% per level
 	
 	# Increase crit chance and damage slightly with level
-	crit_chance *= 1.05  # 5% increase per level
-	crit_damage_multiplier *= 1.05  # 5% increase per level
+	crit_chance = base_crit_chance * pow(1.05, weapon_level - 1)  # 5% increase per level
+	crit_damage_multiplier = base_crit_damage * pow(1.05, weapon_level - 1)  # 5% increase per level

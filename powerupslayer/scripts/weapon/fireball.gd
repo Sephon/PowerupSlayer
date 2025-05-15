@@ -3,8 +3,11 @@ extends WeaponBase
 var active_fireballs: Array[Node] = []
 var max_fireballs := 1
 var fireball_scene: PackedScene
+var base_rotation_speed: float
+var base_orbit_radius: float
 
 func _ready():
+	weapon_type = "fireball"
 	cooldown = 0.0  # No cooldown needed for this weapon
 	damage = 20.0
 	
@@ -19,6 +22,12 @@ func _ready():
 	speed = 10.0
 	rotation_speed = .75
 	orbit_radius = 150.0
+	
+	# Store base stats
+	base_rotation_speed = rotation_speed
+	base_orbit_radius = orbit_radius
+	
+	super._ready()  # Call parent _ready to store base stats
 
 func _process(_delta):
 	# Clean up any destroyed fireballs
@@ -46,19 +55,23 @@ func _spawn_fireball() -> void:
 	player.add_child(fireball)
 	active_fireballs.append(fireball)
 
-# Override the base weapon's apply_weapon_bonuses to handle fireball-specific properties
-func apply_weapon_bonuses(level: int) -> void:
-	# Apply standard bonuses
-	super.apply_weapon_bonuses(level)
+func apply_level_bonuses() -> void:
+	# Apply base weapon bonuses
+	super.apply_level_bonuses()
+	
+	# Calculate level multiplier
+	var level_multiplier = pow(1.1, weapon_level - 1)
 	
 	# Apply fireball-specific bonuses
-	rotation_speed *= 1.1  # Increase rotation speed
-	orbit_radius *= 1.1    # Increase orbit radius
-	damage *= 1.1
+	rotation_speed = base_rotation_speed * level_multiplier
+	orbit_radius = base_orbit_radius * level_multiplier
+	
+	# Update max fireballs based on level
+	max_fireballs = max(1, min(weapon_level / 5, 5))
 	
 	# Update existing fireballs with new properties
 	for fireball in active_fireballs:
 		if is_instance_valid(fireball):
 			fireball.rotation_speed = rotation_speed
-			fireball.orbit_radius = orbit_radius 
-			fireball.damage *= 1.1
+			fireball.orbit_radius = orbit_radius
+			fireball.damage = damage
