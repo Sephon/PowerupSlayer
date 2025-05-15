@@ -15,6 +15,8 @@ var health_bar: Node2D
 var animation_timer: float = 0.0
 var animation_frame: int = 0
 var is_moving: bool = false
+var is_paused: bool = false
+var enemy_manager: Node
 
 # Available weapons for selection
 var available_weapons = {
@@ -38,6 +40,7 @@ var available_weapons = {
 func _ready():
 	health = max_health
 	controls = $Controls
+	enemy_manager = get_node("/root/EnemyManager")
 	setup_weapons()
 	setup_health_bar()
 	setup_sprite()
@@ -71,6 +74,9 @@ func setup_weapons():
 	bullet_weapon.fire(null)
 
 func _physics_process(delta):
+	if is_paused:
+		return
+		
 	# Movement
 	velocity = controls.move_direction * speed
 	move_and_slide()
@@ -88,7 +94,6 @@ func _physics_process(delta):
 		animation_timer = 0
 	
 	for weapon in weapon_slots:
-		var enemy_manager = get_node("/root/EnemyManager")
 		if enemy_manager and weapon != null:
 			var target = enemy_manager.get_closest_to(global_position)
 			if target:
@@ -123,6 +128,11 @@ func level_up():
 	level += 1
 	xp -= xp_requirement
 	xp_requirement = int(base_xp_requirement * pow(1.1, level - 1))
+	
+	# Pause game logic
+	is_paused = true
+	if enemy_manager:
+		enemy_manager.set_paused(true)
 	
 	# Show weapon selection popup
 	show_weapon_selection()
@@ -174,3 +184,8 @@ func _on_weapon_selected(weapon_key: String):
 			if weapon_slots[i] == null:
 				weapon_slots[i] = new_weapon
 				break
+	
+	# Resume game logic
+	is_paused = false
+	if enemy_manager:
+		enemy_manager.set_paused(false)

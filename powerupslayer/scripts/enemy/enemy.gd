@@ -12,6 +12,7 @@ var sprite: Sprite2D
 var base_scale: Vector2
 var base_rotation: float
 var animation_tween: Tween
+var is_paused: bool = false
 
 func _ready():
 	health = max_health
@@ -46,6 +47,9 @@ func start_breathing_animation():
 	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation - rotation_variation, animation_duration/2)
 
 func _physics_process(_delta):
+	if is_paused:
+		return
+		
 	if not target:
 		target = get_closest_player()
 		return
@@ -66,6 +70,9 @@ func get_closest_player():
 	return null
 
 func attack():
+	if is_paused:
+		return
+		
 	if target.has_method("take_damage"):
 		target.take_damage(damage)
 		can_attack = false
@@ -103,4 +110,12 @@ func _exit_tree():
 	# Unregister from EnemyManager
 	var enemy_manager = get_node("/root/EnemyManager")
 	if enemy_manager:
-		enemy_manager.unregister_enemy(self) 
+		enemy_manager.unregister_enemy(self)
+
+func set_paused(paused: bool):
+	is_paused = paused
+	if animation_tween:
+		if paused:
+			animation_tween.pause()
+		else:
+			animation_tween.play() 

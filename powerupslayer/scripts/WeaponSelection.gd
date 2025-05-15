@@ -5,7 +5,11 @@ signal weapon_selected(weapon_key: String)
 var weapon_options: Array = []
 
 func _ready():
+	# Set process mode to always to ensure UI stays interactive
 	process_mode = Node.PROCESS_MODE_ALWAYS
+	
+	# Make sure this control is on top of other nodes
+	z_index = 100
 
 func setup(options: Array):
 	weapon_options = options
