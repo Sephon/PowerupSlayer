@@ -1,7 +1,5 @@
 extends Area2D
 
-const Enemy = preload("res://scripts/Enemy.gd")
-
 var speed := 400.0
 var damage := 20.0
 var velocity := Vector2.ZERO
