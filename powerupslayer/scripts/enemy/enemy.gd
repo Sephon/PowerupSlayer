@@ -15,6 +15,8 @@ var animation_tween: Tween
 var is_paused: bool = false
 var is_dying: bool = false
 var size_factor: float  # Will store the random size factor
+var knockback_velocity: Vector2 = Vector2.ZERO
+var flash_tween: Tween
 
 func _ready():
 	# Generate random size factor between 0.75 and 1.25
@@ -66,9 +68,17 @@ func _physics_process(_delta):
 		target = get_closest_player()
 		return
 	
-	# Move towards target
-	var direction = (target.global_position - global_position).normalized()
-	velocity = direction * speed
+	# Handle knockback
+	if knockback_velocity != Vector2.ZERO:
+		velocity = knockback_velocity
+		knockback_velocity = knockback_velocity.lerp(Vector2.ZERO, 0.2)  # Gradually reduce knockback
+		if knockback_velocity.length() < 1.0:  # Stop knockback when it gets very small
+			knockback_velocity = Vector2.ZERO
+	else:
+		# Normal movement towards target
+		var direction = (target.global_position - global_position).normalized()
+		velocity = direction * speed
+	
 	move_and_slide()	
 	
 	# Attack if close enough
@@ -94,12 +104,21 @@ func attack():
 func is_damageable():
 	return not is_dying
 
-func take_damage(amount: float, is_crit: bool = false):
+func take_damage(amount: float, is_crit: bool = false, knockback: float = 0.0):
 	if is_dying:
 		return
 		
 	health -= amount
 	show_floating_damage(amount, is_crit)
+	
+	# Apply knockback if any
+	if knockback > 0:
+		var knockback_direction = (global_position - get_closest_player().global_position).normalized()
+		knockback_velocity = knockback_direction * knockback
+	
+	# Flash effect
+	flash_damage()
+	
 	if health <= 0:
 		die()
 
@@ -161,3 +180,16 @@ func set_paused(paused: bool):
 			animation_tween.pause()
 		else:
 			animation_tween.play() 
+
+func flash_damage():
+	# Kill any existing flash tween
+	if flash_tween:
+		flash_tween.kill()
+	
+	# Create new flash tween
+	flash_tween = create_tween()
+	flash_tween.set_parallel(true)
+	
+	# Flash white
+	flash_tween.tween_property(sprite, "modulate", Color(255, 255, 255, 1), 0.01)
+	flash_tween.tween_property(sprite, "modulate", Color(1, 1, 1, 1), 0.1).set_delay(0.01)

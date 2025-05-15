@@ -6,6 +6,7 @@ extends Node
 @export var projectile_scene: PackedScene
 @export var fire_rate := 1.0
 @export var speed := 10.0
+@export var knockback = 1
 @export var rotation_speed := 2.0  # For fireball-type weapons
 @export var orbit_radius := 100.0  # For fireball-type weapons
 @export var crit_chance := 0.015  # 1.5% base crit chance

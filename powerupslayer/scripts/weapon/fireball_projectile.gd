@@ -6,6 +6,7 @@ var orbit_radius := 50.0  # Distance from player
 var current_angle := 0.0
 var player: Node2D
 var is_crit := false
+var knockback = 5
 
 func _ready():
 
@@ -42,4 +43,4 @@ func _physics_process(delta):
 
 func _on_body_entered(body):
 	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER":
-		body.take_damage(damage, is_crit) 
+		body.take_damage(damage, is_crit, knockback) 
