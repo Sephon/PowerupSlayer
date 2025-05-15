@@ -1,4 +1,4 @@
-[gd_scene load_steps=2 format=3]
+[gd_scene load_steps=2 format=3 uid="uid://cn6qsu4niu54c"]
 
 [ext_resource type="Script" path="res://scripts/player/health_bar.gd" id="1_script"]
 
@@ -17,4 +17,4 @@ offset_left = -19.0
 offset_top = -4.0
 offset_right = 19.0
 offset_bottom = 4.0
-color = Color(0.8, 0.2, 0.2, 1.0) 
+color = Color(0.8, 0.2, 0.2, 1)

@@ -41,7 +41,5 @@ func _physics_process(delta):
 	global_position = player.global_position + offset
 
 func _on_body_entered(body):
-	print("Fireball hit something: ", body.name)
 	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER":
-		print("Fireball damaging: ", body.name)
 		body.take_damage(damage, is_crit) 

@@ -1,6 +1,6 @@
 extends CharacterBody2D
 
-@export var speed := 300.0
+@export var speed := 150.0
 @export var max_health := 100.0
 
 var health: float
@@ -12,18 +12,29 @@ var level: int = 1
 var base_xp_requirement: int = 100
 var xp_requirement: int = 100
 var health_bar: Node2D
+var animation_timer: float = 0.0
+var animation_frame: int = 0
+var is_moving: bool = false
 
 func _ready():
 	health = max_health
 	controls = $Controls
 	setup_weapons()
 	setup_health_bar()
+	setup_sprite()
+
+func setup_sprite():
+	$Sprite2D.texture = load("res://Sprites/Character_Animations.png")
+	$Sprite2D.hframes = 3  # Assuming the sprite sheet has 3 frames
+	$Sprite2D.vframes = 1
+	$Sprite2D.frame = 0
 
 func setup_health_bar():
 	var health_bar_scene = load("res://scenes/HealthBar.tscn")
 	health_bar = health_bar_scene.instantiate()
 	add_child(health_bar)
-	health_bar.position.y = 40  # Position below the player
+	health_bar.position.y = 60  # Position below the player
+	health_bar.position.x = -10
 	health_bar.setup(max_health)
 
 func setup_weapons():
@@ -55,27 +66,32 @@ func _physics_process(delta):
 	velocity = controls.move_direction * speed
 	move_and_slide()
 	
-	# Weapon firing
-	if current_weapon:
+	# Handle sprite animation
+	is_moving = velocity.length() > 0
+	if is_moving:
+		animation_timer += delta
+		if animation_timer >= 0.1666:  # ~166.6ms per frame
+			animation_timer = 0
+			animation_frame = (animation_frame + 1) % 3
+			$Sprite2D.frame = animation_frame
+			
+			# Flip sprite based on movement direction
+			#if velocity.x < 0:
+				#$Sprite2D.texture = load("res://Sprites/Character_Extended_Reverse.png")
+			#elif velocity.x > 0:
+				#$Sprite2D.texture = load("res://Sprites/Character_Extended.png")
+	else:
+		# Reset to neutral sprite when not moving
+		#$Sprite2D.texture = load("res://Sprites/Char.png")
+		$Sprite2D.frame = 1
+		animation_timer = 0
+	
+	for weapon in weapon_slots:
 		var enemy_manager = get_node("/root/EnemyManager")
-		if enemy_manager:
+		if enemy_manager and weapon != null:
 			var target = enemy_manager.get_closest_to(global_position)
 			if target:
-				current_weapon.fire(target)
-	
-	# Keep fireball weapon active
-	var fireball_weapon = weapon_slots[1]
-	if fireball_weapon:
-		fireball_weapon.fire(null)
-	
-	# Keep lightning weapon active
-	var lightning_weapon = weapon_slots[2]
-	if lightning_weapon:
-		var enemy_manager = get_node("/root/EnemyManager")
-		if enemy_manager:
-			var target = enemy_manager.get_closest_to(global_position)
-			if target:
-				lightning_weapon.fire(target)
+				weapon.fire(target)
 
 func take_damage(amount: float):
 	health -= amount
@@ -98,7 +114,6 @@ func die():
 
 func add_xp(amount: int):
 	xp += amount
-	print("XP: ", xp)
 	check_level_up()
 
 func check_level_up():
@@ -109,8 +124,6 @@ func level_up():
 	level += 1
 	xp -= xp_requirement
 	xp_requirement = int(base_xp_requirement * pow(1.1, level - 1))
-	print("Level up! Now level ", level)
-	print("Next level requires ", xp_requirement, " XP")
 	
 	# Show level up notification
 	var notification_scene = load("res://scenes/LevelUpNotification.tscn")
