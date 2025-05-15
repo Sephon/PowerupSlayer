@@ -112,6 +112,7 @@ func die():
 	# Stop all animations and movement
 	if animation_tween:
 		animation_tween.kill()
+		$CollisionShape2D.set_deferred("disabled", true)	
 	
 	# Create disintegration effect
 	var effect_scene = load("res://scenes/DisintegrationEffect.tscn")

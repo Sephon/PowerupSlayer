@@ -1,6 +1,6 @@
 extends Node2D
 
-@export var spawn_radius := 1500.0
+@export var spawn_radius := 2500.0
 @export var max_enemies := 150
 @export var spawn_interval := .5
 
