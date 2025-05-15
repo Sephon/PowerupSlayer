@@ -1,5 +1,7 @@
 extends Area2D
 
+const Enemy = preload("res://scripts/Enemy.gd")
+
 var speed := 400.0
 var damage := 20.0
 var velocity := Vector2.ZERO
@@ -14,7 +16,7 @@ func _physics_process(delta):
 	position += velocity * delta
 
 func _on_body_entered(body):
-	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER":
+	if body.has_method("take_damage") and body.get_actor_name() != "PLAYER" and body.has_method("is_damageable") and body.is_damageable() == true:
 		body.take_damage(damage, is_crit)
 		queue_free()
 

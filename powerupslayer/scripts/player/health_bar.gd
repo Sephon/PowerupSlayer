@@ -20,7 +20,7 @@ func update_health(new_health: float):
 	# Update the health bar width
 	var health_width = 38.0 * health_percent  # 38 is the full width (19 * 2)
 	health_bar.size.x = health_width
-	health_bar.position.x = -19.0 + (health_width / 2.0)
+	#health_bar.position.x = -19.0 + (health_width / 2.0)
 	
 	# Show/hide based on health
 	if current_health < max_health:

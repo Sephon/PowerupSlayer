@@ -13,6 +13,7 @@ var base_scale: Vector2
 var base_rotation: float
 var animation_tween: Tween
 var is_paused: bool = false
+var is_dying: bool = false
 
 func _ready():
 	health = max_health
@@ -47,7 +48,7 @@ func start_breathing_animation():
 	animation_tween.parallel().tween_property(sprite, "rotation", base_rotation - rotation_variation, animation_duration/2)
 
 func _physics_process(_delta):
-	if is_paused:
+	if is_paused or is_dying:
 		return
 		
 	if not target:
@@ -70,7 +71,7 @@ func get_closest_player():
 	return null
 
 func attack():
-	if is_paused:
+	if is_paused or is_dying:
 		return
 		
 	if target.has_method("take_damage"):
@@ -79,7 +80,13 @@ func attack():
 		await get_tree().create_timer(attack_cooldown).timeout
 		can_attack = true
 
+func is_damageable():
+	return not is_dying
+
 func take_damage(amount: float, is_crit: bool = false):
+	if is_dying:
+		return
+		
 	health -= amount
 	show_floating_damage(amount, is_crit)
 	if health <= 0:
@@ -97,8 +104,31 @@ func get_actor_name():
 	return "ENEMY"
 
 func die():
+	if is_dying:
+		return
+		
+	is_dying = true
+	
+	# Stop all animations and movement
+	if animation_tween:
+		animation_tween.kill()
+	
+	# Create disintegration effect
+	var effect_scene = load("res://scenes/DisintegrationEffect.tscn")
+	var effect = effect_scene.instantiate()
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = global_position
+	effect.setup_from_sprite(sprite)
+	
+	# Hide the original sprite
+	sprite.visible = false
+	
+	# Spawn XP powerup
 	spawn_xp_powerup()
-	queue_free()  # Basic death handling
+	
+	# Wait for effect to finish before removing the enemy
+	await get_tree().create_timer(1.6).timeout
+	queue_free()
 
 func spawn_xp_powerup():
 	var xp_scene = preload("res://scenes/XPPowerup.tscn")

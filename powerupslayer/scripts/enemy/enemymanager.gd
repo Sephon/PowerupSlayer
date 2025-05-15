@@ -13,7 +13,7 @@ func get_closest_to(pos: Vector2) -> Node:
 	var closest = null
 	var min_dist = INF
 	for enemy in enemies:
-		if not is_instance_valid(enemy):
+		if not is_instance_valid(enemy) or enemy.is_dying:
 			continue
 		var dist = pos.distance_to(enemy.global_position)
 		if dist < min_dist:
