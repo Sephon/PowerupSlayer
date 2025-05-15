@@ -25,13 +25,35 @@ func update_spawn_positions():
 	var view_size = viewport.get_visible_rect().size
 	var camera_pos = camera.global_position
 	
-	# Calculate spawn positions around viewport
-	var positions: Array[Vector2] = [
-		Vector2(camera_pos.x - view_size.x/2 - spawn_radius, camera_pos.y),  # Left
-		Vector2(camera_pos.x + view_size.x/2 + spawn_radius, camera_pos.y),  # Right
-		Vector2(camera_pos.x, camera_pos.y - view_size.y/2 - spawn_radius),  # Top
-		Vector2(camera_pos.x, camera_pos.y + view_size.y/2 + spawn_radius)   # Bottom
-	]
+	# Calculate spawn positions around viewport with randomization
+	var positions: Array[Vector2] = []
+	var num_positions = 8  # Number of spawn points to generate
+	
+	for i in range(num_positions):
+		# Get random angle
+		var angle = randf() * TAU
+		
+		# Calculate position with some randomness in distance
+		var distance = spawn_radius + randf_range(-100, 100)
+		var pos = Vector2(
+			camera_pos.x + cos(angle) * distance,
+			camera_pos.y + sin(angle) * distance
+		)
+		
+		# Ensure position is outside viewport
+		var view_rect = Rect2(
+			camera_pos.x - view_size.x/2,
+			camera_pos.y - view_size.y/2,
+			view_size.x,
+			view_size.y
+		)
+		
+		# If position is inside viewport, push it out
+		if view_rect.has_point(pos):
+			var direction = (pos - camera_pos).normalized()
+			pos = camera_pos + direction * (spawn_radius + 100)
+		
+		positions.append(pos)
 	
 	spawn_queue = positions
 
