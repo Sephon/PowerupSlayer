@@ -5,8 +5,11 @@ extends CharacterBody2D
 @export var attack_cooldown := 1.0
 @export var max_health := 50.0
 
+var audio_player = AudioStreamPlayer.new()
 var target: Node2D
+
 var can_attack := true
+
 var health: float
 var sprite: Sprite2D
 var base_scale: Vector2
@@ -36,6 +39,13 @@ func _ready():
 	
 	# Start the breathing animation
 	start_breathing_animation()
+	
+	#Handle sound effects for damage,dying,attacking etc
+	var gunshot_sound: AudioStream
+	gunshot_sound = load("res://soundeffects/punch-2-37333.mp3")
+	audio_player.stream = gunshot_sound
+	add_child(audio_player)
+	audio_player.volume_db = -10  # Adjust volume as needed	
 	
 	# Register with EnemyManager
 	var enemy_manager = get_node("/root/EnemyManager")
@@ -107,6 +117,8 @@ func is_damageable():
 func take_damage(amount: float, is_crit: bool = false, knockback: float = 0.0):
 	if is_dying:
 		return
+		
+	audio_player.play()
 		
 	health -= amount
 	show_floating_damage(amount, is_crit)

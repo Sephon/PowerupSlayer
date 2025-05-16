@@ -23,17 +23,22 @@ var available_weapons = {
 	"bullet": {
 		"name": "Bullet",
 		"scene": "res://scripts/weapon/bullet.gd",
-		"sprite": "res://Sprites/weapons/bullet.png"
+		"sprite": "res://Sprites/bullet.png"
 	},
 	"fireball": {
 		"name": "Fireball",
 		"scene": "res://scripts/weapon/fireball.gd",
-		"sprite": "res://Sprites/weapons/fireball.png"
+		"sprite": "res://Sprites/fireball.png"
 	},
 	"lightning": {
 		"name": "Lightning",
 		"scene": "res://scripts/weapon/lightning.gd",
-		"sprite": "res://Sprites/weapons/lightning.png"
+		"sprite": "res://Sprites/lightning.png"
+	},
+	"boomerang": {
+		"name": "Boomerang",
+		"scene": "res://scripts/weapon/boomerang.gd",
+		"sprite": "res//Sprites/Boomerang.png"
 	}
 }
 

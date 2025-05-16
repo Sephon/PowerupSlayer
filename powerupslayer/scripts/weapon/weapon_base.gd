@@ -50,7 +50,7 @@ func _spawn_projectile(target: Node2D) -> void:
 		
 	var projectile = projectile_scene.instantiate()
 	projectile.global_position = get_parent().global_position
-	
+
 	# Calculate damage with random variation and crit
 	var final_damage = damage
 	var is_crit = randf() < crit_chance
