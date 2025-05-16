@@ -1,0 +1,44 @@
+extends Area2D
+
+@export var suck_distance := 100.0
+@export var suck_speed := 400.0
+
+var player = null
+var is_sucking_in = false
+
+func _process(delta):
+	if not player:
+		player = get_tree().get_nodes_in_group("players")[0] if get_tree().get_nodes_in_group("players").size() > 0 else null
+		return
+		
+	var dist = global_position.distance_to(player.global_position)
+	if dist < suck_distance:
+		is_sucking_in = true
+	if is_sucking_in:
+		var direction = (player.global_position - global_position).normalized()
+		global_position += direction * suck_speed * delta
+		if dist < 20:
+			collect()
+
+func _on_body_entered(body):
+	if body.is_in_group("players"):
+		collect()
+
+func collect():
+	# Heal player
+	if player.has_method("heal"):
+		player.heal()
+	
+	# Create collection effect
+	var effect_scene = load("res://scenes/DisintegrationEffect.tscn")
+	var effect = effect_scene.instantiate()
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = global_position
+	effect.setup_from_sprite($Sprite2D)
+	
+	# Hide the medikit
+	$Sprite2D.visible = false
+	
+	# Wait for effect to finish before removing
+	await get_tree().create_timer(1.0).timeout
+	queue_free() 
