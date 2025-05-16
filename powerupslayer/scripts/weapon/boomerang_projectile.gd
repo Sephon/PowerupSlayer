@@ -7,11 +7,13 @@ var is_crit := false
 var knockback := 50
 var penetration := 2
 var enemies_hit := 0
-var max_distance := 250.0
+var max_distance := 550.0
 var return_speed := 1.5  # Speed multiplier when returning
 var current_distance := 0.0
 var is_returning := false
 var start_position := Vector2.ZERO
+
+@export var rotation_speed := 720.0  # Degrees per second (adjust for speed)
 
 func _ready():
 	# Enable collision with bodies
@@ -25,6 +27,8 @@ func _ready():
 	start_position = global_position
 
 func _physics_process(delta):
+	rotation_degrees += rotation_speed * delta
+
 	if not is_returning:
 		# Moving away from player
 		position += velocity * delta
