@@ -18,16 +18,18 @@ var size_factor: float  # Will store the random size factor
 var knockback_velocity: Vector2 = Vector2.ZERO
 var flash_tween: Tween
 var hit_sound: AudioStream
+var is_super_enemy: bool = false
 
 func _ready():
-	# Generate random size factor between 0.75 and 1.25
-	size_factor = randf_range(0.75, 1.25)
+	# Generate random size factor between 0.75 and 1.25 for normal enemies
+	if not is_super_enemy:
+		size_factor = randf_range(0.75, 1.25)
 	
 	# Apply quadratic scaling to health and speed
 	# Larger enemies have more health but move slower
 	# Smaller enemies have less health but move faster
-	max_health *= size_factor * size_factor  # Quadratic scaling for health
-	speed /= (size_factor * size_factor)    # Quadratic scaling for speed (inverse relationship)
+	max_health *= clamp(size_factor * size_factor, 1.0, 100.0)  # Quadratic scaling for health
+	speed /= clamp(size_factor * size_factor, 1.0, 10.0)    # Quadratic scaling for speed (inverse relationship)
 	
 	health = max_health
 	sprite = $Sprite2D
@@ -166,6 +168,10 @@ func die():
 	# Spawn XP powerup
 	spawn_xp_powerup()
 	
+	# If it's a super enemy, spawn a chest
+	if is_super_enemy:
+		spawn_chest()
+	
 	# Wait for effect to finish before removing the enemy
 	await get_tree().create_timer(1.6).timeout
 	queue_free()
@@ -175,6 +181,12 @@ func spawn_xp_powerup():
 	var xp_powerup = xp_scene.instantiate()
 	xp_powerup.global_position = global_position
 	get_tree().current_scene.add_child(xp_powerup)
+
+func spawn_chest():
+	var chest_scene = preload("res://scenes/Chest.tscn")
+	var chest = chest_scene.instantiate()
+	chest.global_position = global_position
+	get_tree().current_scene.add_child(chest)
 
 func _exit_tree():
 	# Unregister from EnemyManager

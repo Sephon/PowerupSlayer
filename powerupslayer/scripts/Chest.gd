@@ -4,6 +4,10 @@ extends Area2D
 @onready var glow = $Glow
 var has_been_opened = false
 var original_scale: Vector2
+var iron_scrap_amount := 1
+var pickup_range := 50.0
+var player: Node2D
+var is_collected := false
 
 func _ready():
 	# Connect the body entered signal
@@ -14,6 +18,20 @@ func _ready():
 	sprite.scale = Vector2(0.1, 0.1)
 	var tween = create_tween()
 	tween.tween_property(sprite, "scale", original_scale, 0.5).set_trans(Tween.TRANS_ELASTIC).set_ease(Tween.EASE_OUT)
+	
+	# Find player
+	var players = get_tree().get_nodes_in_group("players")
+	if players.size() > 0:
+		player = players[0]
+
+func _process(_delta):
+	if is_collected:
+		return
+		
+	if player:
+		var distance = global_position.distance_to(player.global_position)
+		if distance <= pickup_range:
+			collect()
 
 func _on_timer_timeout():
 	# Pulse the glow
@@ -22,26 +40,34 @@ func _on_timer_timeout():
 	tween.tween_property(glow, "energy", 0.5, 0.5)
 
 func _on_body_entered(body):
-	if has_been_opened or not body.is_in_group("player"):
+	if is_collected:
 		return
 		
-	has_been_opened = true
+	if body.is_in_group("players"):
+		collect()
+
+func collect():
+	if is_collected:
+		return
+		
+	is_collected = true
 	
-	# Give XP to player
-	if body.has_method("add_xp"):
-		body.add_xp(1000)
+	# Add iron scrap to player's inventory
+	if player.has_method("add_iron_scrap"):
+		player.add_iron_scrap(iron_scrap_amount)
 	
-	# Show reward popup
-	show_reward_popup()
+	# Create collection effect
+	var effect_scene = load("res://scenes/DisintegrationEffect.tscn")
+	var effect = effect_scene.instantiate()
+	get_tree().current_scene.add_child(effect)
+	effect.global_position = global_position
+	effect.setup_from_sprite($Sprite2D)
 	
-	# Animate opening
-	var tween = create_tween()
-	tween.tween_property(sprite, "scale", original_scale * 1.2, 0.2)
-	tween.tween_property(sprite, "scale", Vector2.ZERO, 0.3)
-	tween.tween_property(glow, "energy", 0.0, 0.3)
+	# Hide the chest
+	$Sprite2D.visible = false
 	
-	# Queue free after animation
-	await tween.finished
+	# Wait for effect to finish before removing
+	await get_tree().create_timer(1.0).timeout
 	queue_free()
 
 func show_reward_popup():

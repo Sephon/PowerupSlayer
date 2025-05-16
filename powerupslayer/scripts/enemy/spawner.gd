@@ -3,10 +3,13 @@ extends Node2D
 @export var spawn_radius := 2500.0
 @export var max_enemies := 150
 @export var spawn_interval := .5
+@export var super_enemy_chance := 0.01  # 1% chance
+@export var super_enemy_timeout := 300.0  # 5 minutes in seconds
 
 var enemy_scene: PackedScene
 var spawn_queue: Array[Vector2] = []
 var can_spawn := true
+var last_super_enemy_time := -super_enemy_timeout  # Initialize to allow immediate spawn
 
 func _ready():
 	enemy_scene = load("res://scenes/enemy.tscn")
@@ -65,6 +68,15 @@ func spawn_enemy():
 	var spawn_pos = spawn_queue.pop_front()
 	var enemy = enemy_scene.instantiate()
 	enemy.global_position = spawn_pos
+	
+	# Check for super enemy spawn
+	var current_time = Time.get_ticks_msec() / 1000.0  # Convert to seconds
+	if randf() < super_enemy_chance and (current_time - last_super_enemy_time) >= super_enemy_timeout:
+		# Make it a super enemy
+		enemy.is_super_enemy = true
+		enemy.size_factor = randf_range(3.0, 5.0)  # 300% to 500% size
+		last_super_enemy_time = current_time
+	
 	get_tree().root.add_child(enemy)
 	
 	can_spawn = false

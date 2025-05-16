@@ -1,9 +1,9 @@
-[gd_scene load_steps=6 format=3 uid="uid://chmd7fogneps3"]
+[gd_scene load_steps=3 format=3 uid="uid://c8q6j2n4k5m3p"]
 
 [ext_resource type="Script" path="res://scripts/Chest.gd" id="1_2u4vx"]
-[ext_resource type="Texture2D" uid="uid://dcd8om2jymwtg" path="res://Sprites/Spider.png" id="2_7th38"]
+[ext_resource type="Texture2D" uid="uid://b8q6j2n4k5m3p" path="res://Sprites/Chest.png" id="2_3u4vx"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_0b8hk"]
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_1"]
 size = Vector2(32, 32)
 
 [sub_resource type="Gradient" id="Gradient_1"]
@@ -21,10 +21,10 @@ fill_to = Vector2(1, 1)
 script = ExtResource("1_2u4vx")
 
 [node name="Sprite2D" type="Sprite2D" parent="."]
-texture = ExtResource("2_7th38")
+texture = ExtResource("2_3u4vx")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("RectangleShape2D_0b8hk")
+shape = SubResource("RectangleShape2D_1")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="."]
 
