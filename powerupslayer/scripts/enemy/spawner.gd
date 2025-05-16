@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var spawn_radius := 2500.0
-@export var max_enemies := 150
+@export var max_enemies := 50
 @export var spawn_interval := .5
 @export var super_enemy_chance := 0.01  # 1% chance
 @export var super_enemy_timeout := 300.0  # 5 minutes in seconds

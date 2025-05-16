@@ -63,11 +63,11 @@ func apply_level_bonuses() -> void:
 	var level_multiplier = pow(1.1, weapon_level - 1)
 	
 	# Apply fireball-specific bonuses
-	rotation_speed = base_rotation_speed * level_multiplier
-	orbit_radius = base_orbit_radius * level_multiplier
-	
+	rotation_speed = base_rotation_speed * (level_multiplier * 0.5)
+	#orbit_radius = base_orbit_radius * level_multiplier
+
 	# Update max fireballs based on level
-	max_fireballs = max(1, min(weapon_level / 5, 5))
+	max_fireballs = max(1, min((weapon_level / 5) + 1, 5))
 	
 	# Update existing fireballs with new properties
 	for fireball in active_fireballs:

@@ -53,8 +53,8 @@ func collect():
 	is_collected = true
 	
 	# Add iron scrap to player's inventory
-	if player.has_method("add_iron_scrap"):
-		player.add_iron_scrap(iron_scrap_amount)
+	var resource_manager = get_node("/root/ResourceManager")
+	resource_manager.add_iron_scrap(iron_scrap_amount)
 	
 	# Create collection effect
 	var effect_scene = load("res://scenes/DisintegrationEffect.tscn")
