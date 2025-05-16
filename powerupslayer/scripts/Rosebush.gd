@@ -10,6 +10,19 @@ func _ready():
 	
 	# Load hit sound
 	hit_sound = load("res://soundeffects/punch-2-37333.mp3")
+	
+	# Connect area entered signal
+	area_entered.connect(_on_area_entered)
+
+func _on_area_entered(area):
+	if is_destroyed:
+		return
+		
+	print("Rosebush hit by area: ", area.name)
+	# Check if it's a projectile by looking for the name or if it's in the projectiles group
+	if area.name.begins_with("Bullet") or area.name.begins_with("Fireball") or area.name.begins_with("Boomerang") or area.name.begins_with("Lightning") or area.is_in_group("projectiles"):
+		print("Destroying rosebush from projectile hit")
+		destroy()
 
 func _on_body_entered(body):
 	if is_destroyed:
@@ -52,6 +65,7 @@ func destroy():
 	queue_free()
 
 func spawn_medikit():
+	print("Spawning medikit")
 	var medikit_scene = preload("res://scenes/Medikit.tscn")
 	var medikit = medikit_scene.instantiate()
 	medikit.global_position = global_position

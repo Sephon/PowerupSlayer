@@ -128,6 +128,10 @@ func add_xp(amount: int):
 func check_level_up():
 	while xp >= xp_requirement:
 		level_up()
+		
+func heal():
+	health = max_health
+	health_bar.update_health(health)
 
 func level_up():
 	level += 1

@@ -5,7 +5,7 @@ const TILE_SIZE = 64
 const MARGIN = 32
 const WORLD_SIZE = 3000  # 3000x3000 tiles
 const UPDATE_COOLDOWN = 0.5  # Seconds between chunk updates
-const ROSEBUSH_CHANCE = 0.05  # 5% chance per tile
+const ROSEBUSH_CHANCE = 0.001  # 0.1% chance per tile
 
 var tilemap: TileMap
 var loaded_chunks: Dictionary = {}
