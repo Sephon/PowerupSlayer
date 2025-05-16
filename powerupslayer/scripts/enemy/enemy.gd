@@ -5,11 +5,8 @@ extends CharacterBody2D
 @export var attack_cooldown := 1.0
 @export var max_health := 50.0
 
-var audio_player = AudioStreamPlayer.new()
 var target: Node2D
-
 var can_attack := true
-
 var health: float
 var sprite: Sprite2D
 var base_scale: Vector2
@@ -20,6 +17,7 @@ var is_dying: bool = false
 var size_factor: float  # Will store the random size factor
 var knockback_velocity: Vector2 = Vector2.ZERO
 var flash_tween: Tween
+var hit_sound: AudioStream
 
 func _ready():
 	# Generate random size factor between 0.75 and 1.25
@@ -40,12 +38,8 @@ func _ready():
 	# Start the breathing animation
 	start_breathing_animation()
 	
-	#Handle sound effects for damage,dying,attacking etc
-	var gunshot_sound: AudioStream
-	gunshot_sound = load("res://soundeffects/punch-2-37333.mp3")
-	audio_player.stream = gunshot_sound
-	add_child(audio_player)
-	audio_player.volume_db = -10  # Adjust volume as needed	
+	# Load sound effect
+	hit_sound = load("res://soundeffects/punch-2-37333.mp3")
 	
 	# Register with EnemyManager
 	var enemy_manager = get_node("/root/EnemyManager")
@@ -118,7 +112,10 @@ func take_damage(amount: float, is_crit: bool = false, knockback: float = 0.0):
 	if is_dying:
 		return
 		
-	audio_player.play()
+	# Play hit sound using AudioPool
+	var audio_pool = get_node("/root/AudioPool")
+	if audio_pool:
+		audio_pool.play_sound(hit_sound, -10)
 		
 	health -= amount
 	show_floating_damage(amount, is_crit)
