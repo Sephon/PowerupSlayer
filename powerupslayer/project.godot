@@ -20,6 +20,7 @@ config/icon="res://icon.svg"
 ProjectInit="*res://scripts/project_init.gd"
 EnemyManager="*res://scripts/enemy/EnemyManager.gd"
 AudioPool="*res://scripts/AudioPool.gd"
+ResourceManager="*res://scripts/ResourceManager.gd"
 
 [dotnet]
 

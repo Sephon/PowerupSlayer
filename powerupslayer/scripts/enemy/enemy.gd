@@ -28,8 +28,12 @@ func _ready():
 	# Apply quadratic scaling to health and speed
 	# Larger enemies have more health but move slower
 	# Smaller enemies have less health but move faster
-	max_health *= clamp(size_factor * size_factor, 1.0, 100.0)  # Quadratic scaling for health
-	speed /= clamp(size_factor * size_factor, 1.0, 10.0)    # Quadratic scaling for speed (inverse relationship)
+	max_health *= size_factor * size_factor  # Quadratic scaling for health
+	if is_super_enemy:
+		speed /= 2 # Super enemies just move half of normal speed
+	else:
+		speed /= size_factor * size_factor    # Quadratic scaling for speed (inverse relationship)
+
 	
 	health = max_health
 	sprite = $Sprite2D

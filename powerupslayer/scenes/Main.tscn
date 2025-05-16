@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg4rulxjctpn0"]
+[gd_scene load_steps=9 format=3 uid="uid://cg4rulxjctpn0"]
 
 [ext_resource type="Script" path="res://scripts/map/map.gd" id="1_pqhig"]
 [ext_resource type="Script" path="res://scripts/player/player.gd" id="2_sjus0"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/player/controls.gd" id="4_u0lf6"]
 [ext_resource type="Script" path="res://scripts/enemy/spawner.gd" id="5_1mkih"]
 [ext_resource type="PackedScene" uid="uid://lrk82fxhq00r" path="res://scenes/ui/xp_bar.tscn" id="6_xpbar"]
+[ext_resource type="PackedScene" uid="uid://b1ijvug86n6ab" path="res://scenes/ui/iron_scrap_display.tscn" id="7_ironscrapdisplay"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_g1jan"]
 size = Vector2(32, 32)
@@ -36,3 +37,5 @@ script = ExtResource("5_1mkih")
 [node name="UI" type="CanvasLayer" parent="."]
 
 [node name="XPBar" parent="UI" instance=ExtResource("6_xpbar")]
+
+[node name="IronScrapDisplay" parent="UI" instance=ExtResource("7_ironscrapdisplay")]

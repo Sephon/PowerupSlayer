@@ -43,6 +43,12 @@ func _ready():
 	# Generate initial chunks around origin
 	update_chunks(Vector2i.ZERO)
 
+	# Add IronScrapDisplay to UI
+	var iron_scrap_display = preload("res://scenes/ui/iron_scrap_display.tscn").instantiate()
+	var ui = get_node("UI")
+	if ui:
+		ui.add_child(iron_scrap_display)
+
 func update_chunks(camera_chunk: Vector2i):
 	# Unload chunks outside view radius
 	var chunks_to_remove = []

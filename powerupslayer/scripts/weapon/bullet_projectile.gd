@@ -16,7 +16,7 @@ func _ready():
 	gunshot_sound = load("res://soundeffects/heathers-gunshot-effect2.mp3")
 	var audio_pool = get_node("/root/AudioPool")
 	if audio_pool:
-		audio_pool.play_sound(gunshot_sound, -10)
+		audio_pool.play_sound(gunshot_sound, -25)
 
 func _physics_process(delta):
 	position += velocity * delta

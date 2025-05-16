@@ -71,7 +71,8 @@ func spawn_enemy():
 	
 	# Check for super enemy spawn
 	var current_time = Time.get_ticks_msec() / 1000.0  # Convert to seconds
-	if randf() < super_enemy_chance and (current_time - last_super_enemy_time) >= super_enemy_timeout:
+	var rand = randf()
+	if rand < super_enemy_chance and (current_time - last_super_enemy_time) >= super_enemy_timeout:
 		# Make it a super enemy
 		enemy.is_super_enemy = true
 		enemy.size_factor = randf_range(3.0, 5.0)  # 300% to 500% size
